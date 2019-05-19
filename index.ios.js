@@ -67,7 +67,7 @@ class FirstPage extends Component
   }
 }
 
-// 二级页面
+// 二级页面.
 class SecondPage extends Component
 {
   render()
