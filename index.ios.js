@@ -5,9 +5,12 @@
  */
 
 import React, { Component } from 'react';
-import {AppRegistry, StyleSheet, Text, TextInput, ListView, View, Image, TouchableOpacity, TouchableHighlight} from 'react-native';
-import { Button } from 'antd-mobile-rn';
+import {AppRegistry, StyleSheet, Text, TextInput, ListView, View, Image, TouchableOpacity, TouchableHighlight,ScrollView} from 'react-native';
+import { Button, List } from 'antd-mobile-rn';
 import {Navigator } from 'react-native-deprecated-custom-components';
+
+const Item = List.Item;
+const Brief = Item.Brief;
 
 export default class TestNavigator extends Component {
   configureScene(route, routeStack)
@@ -58,13 +61,15 @@ class FirstPage extends Component
   {
     return (
         <View style={{paddingTop: 80}}>
-          {/*<TouchableOpacity onPress={() => this.props.navigator.push({component: SecondPage})}>*/}
-            {/*<Text style={{fontSize:28}}>点击跳转到二级页面</Text>*/}
-          {/*</TouchableOpacity>*/}
-          <Button onClick={() => this.gotoPage(SecondPage, '二级页面')}>
-            <Text style={{fontSize:28, padding: 12}}>点击跳转到二级页面</Text>
-            {/*<Text style={{padding: 10, fontSize: 20}}>这是首页，这是首页，这是首页，这是首页，这是首页</Text>*/}
-          </Button>
+
+          {/*<Button onClick={() => this.gotoPage(SecondPage, '二级页面')}>*/}
+            {/*<Text style={{fontSize:28, padding: 12}}>点击跳转到二级页面</Text>*/}
+            {/*/!*<Text style={{padding: 10, fontSize: 20}}>这是首页，这是首页，这是首页，这是首页，这是首页</Text>*!/*/}
+          {/*</Button>*/}
+
+         <TouchableOpacity onPress={()=>{this.gotoPage(SecondPage, '二级页面');}}>
+            <Image source={require('./img/customer64.png')} />
+         </TouchableOpacity>
         </View>
     );
   }
@@ -73,20 +78,62 @@ class FirstPage extends Component
 // 二级页面
 class SecondPage extends Component
 {
+    gotoPage1(component, title)
+    {
+        this.props.navigator.push(
+            {
+                component: component,
+                passProps: {
+                    title: '深圳市汇源肾宝有限公司',
+                    lastPageTitle: this.props.title
+
+                }
+            })
+    }
   render()
   {
     return (
-        <View style={{paddingTop: 80}}>
+        <ScrollView style={{paddingTop: 60}}
+                    automaticallyAdjustContentInsets={false}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}>
           {/*<TouchableOpacity onPress={()=>this.props.navigator.pop()}>*/}
             {/*<Text style={{color: 'red', fontSize: 28}}>点击返回首页</Text>*/}
           {/*</TouchableOpacity>*/}
-          <Button onClick={()=>this.props.navigator.pop()}>
-            <Text style={{color: 'red', fontSize: 28}}>点击返回首页</Text>
-          </Button>
 
-        </View>
+          {/*<Button onClick={()=>this.props.navigator.pop()}>*/}
+            {/*<Text style={{color: 'red', fontSize: 28}}>点击返回首页</Text>*/}
+          {/*</Button>*/}
+
+          {/*<Image source={require('./img/crm16.png')} />*/}
+
+            <List renderHeader={'客户列表'}>
+                <Item   arrow="horizontal"  onClick={() => {this.gotoPage1(HuiYuan, '深圳市汇源肾宝有限公司');}}>
+                    深圳市汇源肾宝有限公司
+                </Item>
+                <Item   arrow="horizontal" onPress={() => {}}>
+                    深圳市恒源祥集团有限公司
+                </Item>
+
+            </List>
+        </ScrollView>
     );
   }
+}
+
+
+class HuiYuan extends Component{
+    render() {
+        return (
+            <ScrollView style={{paddingTop: 60}}
+                        automaticallyAdjustContentInsets={false}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}>
+                <Button>我是汇源肾宝</Button>
+
+            </ScrollView>
+        );
+    }
 }
 
 
