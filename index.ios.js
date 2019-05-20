@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import {AppRegistry, StyleSheet, Text, TextInput, ListView, View, Image, TouchableOpacity} from 'react-native';
+import {AppRegistry, StyleSheet, Text, TextInput, ListView, View, Image, TouchableOpacity, TouchableHighlight} from 'react-native';
 import { Button } from 'antd-mobile-rn';
 import {Navigator } from 'react-native-deprecated-custom-components';
 
@@ -28,7 +28,9 @@ export default class TestNavigator extends Component {
             navigationBar={
               <Navigator.NavigationBar
                   style={styles.navContainer}
-                  routeMapper={NavigationBarRouteMapper}/>}/>
+                  routeMapper={NavigationBarRouteMapper}
+              />}
+        />
     );
   }
 }
@@ -47,6 +49,7 @@ class FirstPage extends Component
           passProps: {
             title: '二级页面',
             lastPageTitle: this.props.title
+
           }
         })
   }
@@ -59,7 +62,7 @@ class FirstPage extends Component
             {/*<Text style={{fontSize:28}}>点击跳转到二级页面</Text>*/}
           {/*</TouchableOpacity>*/}
           <Button onClick={() => this.gotoPage(SecondPage, '二级页面')}>
-            <Text style={{fontSize:28, padding: 10}}>点击跳转到二级页面</Text>
+            <Text style={{fontSize:28, padding: 12}}>点击跳转到二级页面</Text>
             {/*<Text style={{padding: 10, fontSize: 20}}>这是首页，这是首页，这是首页，这是首页，这是首页</Text>*/}
           </Button>
         </View>
@@ -91,37 +94,33 @@ class SecondPage extends Component
 var NavigationBarRouteMapper =
     {
       // 左键
-      LeftButton(route, navigator, index, navState)
-      {
-        if (index <= 0) return null;
-        return (
-
-        <View style={{paddingTop: 80}}>
-
-          <Button onClick={() => {if (index > 0) {navigator.pop()}}}>
-            <Text style={{color: 'red', fontSize: 28}}>返回</Text>
-          </Button>
-
-        </View>
-
-
-
-        );
-      },
+      LeftButton: (route, navigator, index, navState) =>
+        {
+            if (index <= 0) {
+                return null;
+            } else {
+                return (
+                    <TouchableHighlight style={{ marginTop: 10 }} onPress={() => navigator.pop()}>
+                        <Text>返回</Text>
+                    </TouchableHighlight>
+                );
+            }
+        },
       // 右键
       RightButton(route, navigator, index, navState)
       {
-        if(!route.passProps.rightText) return null;
-        return (
-            <View style={{paddingTop: 80}}>
-
-              <Button onClick={() => alert('测试菜单')}>
-                {route.passProps.rightText}
-              </Button>
-
-            </View>
-
-        );
+        // if(!route.passProps.rightText) return null;
+        // return (
+        //     <View style={{paddingTop: 80}}>
+        //
+        //       <Button onClick={() => alert('测试菜单')}>
+        //         {route.passProps.rightText}
+        //       </Button>
+        //
+        //     </View>
+        //
+        // );
+          return null;
       },
       // 标题
       Title(route, navigator, index, navState)
