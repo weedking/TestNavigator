@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import {AppRegistry, StyleSheet, Text, TextInput, ListView, View, Image, TouchableOpacity, TouchableHighlight,ScrollView} from 'react-native';
+import {AppRegistry, StyleSheet, FlatList, Text, TextInput, ListView, View, Image, TouchableOpacity, TouchableHighlight,ScrollView} from 'react-native';
 import { Button, List } from 'antd-mobile-rn';
 import {Navigator } from 'react-native-deprecated-custom-components';
 
@@ -50,7 +50,8 @@ class FirstPage extends Component
         {
           component: component,
           passProps: {
-            title: '二级页面',
+            // title: '二级页面',
+              title: title,
             lastPageTitle: this.props.title
 
           }
@@ -78,45 +79,164 @@ class FirstPage extends Component
 // 二级页面
 class SecondPage extends Component
 {
+     // test1=111;
+    constructor(props){
+        super(props);
+        this.state = {
+            // dataSource: [],
+            a:1,
+            b:2,
+            id:9,
+            c:99,
+            dataSource2:[
+                {
+                    "id": 1,
+                    "key1": "1",
+                    "name": "深圳汇源果汁有限公司",
+                    "city": "深圳",
+                    "phone": "13799998888",
+                    "contacts": "王大鹏",
+                    "email": "260815998@qq.com",
+                    "source": "广交会",
+                    "title": "总经理",
+                    "need": "软件",
+                    "url": "http://www.sohu.com/",
+                    "address": "广东省深圳市南山区桃园路22号天源大厦B座1123室",
+                    "remark": "初步接触",
+                    "inputtime": null
+                },
+        {
+            "id": 70,
+            "key1": "请填写key",
+            "name": "请填写公司名称",
+            "city": "请填写城市",
+            "phone": "请填写电话",
+            "contacts": "请填写联系人",
+            "email": "请填写邮箱",
+            "source": "请填写来源",
+            "title": "请填写职务",
+            "need": "请填写产品kk",
+            "url": "请填写网址",
+            "address": "请填写公司地址",
+            "remark": "请填写备注",
+            "inputtime": null
+        }]
+
+        };
+    }
+
+    componentDidMount() {//组件挂载时执行的代码
+        this.timerID = setInterval(
+            () => this.tick(),
+            1000 //每秒更新一次
+        );
+    }
+
+    tick() {//定时器
+        this.setState({
+            date: new Date(),//创建当前时间
+            child:'删除',
+        });
+        this.getCustomerList();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);//清理计时器
+
+    }
+
+    //从后台获取用户列表
+    getCustomerList(){
+        /* 查询数据的格式 */
+        let filter={
+            object:{
+                object:{
+
+                }
+            }
+        };
+
+        var url ="http://119.23.77.187:8080/getCustomerList";
+        var getInformation ={
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            /* json格式转换 */
+            body:JSON.stringify(filter)
+        }
+        fetch(url,getInformation)
+            .then(response => response.json())
+            .then(responseJson=>{
+                // 返回的数据 根据自己返回的json格式取值.
+                debugger;
+                console.log(responseJson);
+                this.setState({
+                    dataSource: responseJson
+
+                })
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+
     gotoPage1(component, title)
     {
         this.props.navigator.push(
             {
                 component: component,
                 passProps: {
-                    title: '深圳市汇源肾宝有限公司',
+                    title: title,
                     lastPageTitle: this.props.title
 
                 }
             })
     }
+
+
+    jian(){
+        const {a} = this.state.a;
+        // const {id} = this.state.dataSource[0].id
+        this.setState({ a: a-1,}
+            // dataSource:dataSource+''}
+            );
+        alert('a减去1后的值：' + a);
+    }
+
+    add(){
+        const {a} = this.state.a;
+        // this.setState({a : a+1});
+        this.setState({a : a+1});
+        alert('a加上1后的值：' + a);
+    }
+
+
   render()
   {
+
     return (
-        <ScrollView style={{paddingTop: 60}}
-                    automaticallyAdjustContentInsets={false}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}>
-          {/*<TouchableOpacity onPress={()=>this.props.navigator.pop()}>*/}
-            {/*<Text style={{color: 'red', fontSize: 28}}>点击返回首页</Text>*/}
-          {/*</TouchableOpacity>*/}
 
-          {/*<Button onClick={()=>this.props.navigator.pop()}>*/}
-            {/*<Text style={{color: 'red', fontSize: 28}}>点击返回首页</Text>*/}
-          {/*</Button>*/}
 
-          {/*<Image source={require('./img/crm16.png')} />*/}
 
-            <List renderHeader={'客户列表'}>
-                <Item   arrow="horizontal"  onClick={() => {this.gotoPage1(HuiYuan, '深圳市汇源肾宝有限公司');}}>
-                    深圳市汇源肾宝有限公司
-                </Item>
-                <Item   arrow="horizontal" onPress={() => {}}>
-                    深圳市恒源祥集团有限公司
-                </Item>
+                            <View style={{flex: 1, paddingTop:100}}>
+                                <FlatList
+                                    data={this.state.dataSource}
+                                    renderItem={({item}) => <Text>{item.title}, {item.name}</Text>}
+                                    keyExtractor={({id}, index) => id}
+                                />
+                            </View>
 
-            </List>
-        </ScrollView>
+
+      // <div>
+      //
+      //     {this.state.dataSource.map(
+      //         //传递点中的ID
+      //         u => <div key={u.id} >{u.name}</div>)
+      //     }
+      // </div>
     );
   }
 }
