@@ -47,15 +47,19 @@ class FirstPage extends Component
      */
     gotoPage(component, title)
     {
+        // const{navigator} = this.props;
         this.props.navigator.push(
             {
                 component: component,
                 passProps: {
                     // title: '二级页面',
                     title: title,
-                    lastPageTitle: this.props.title
-
-                }
+                    lastPageTitle: this.props.title,
+                    // id:this.state.id,
+                },
+                // params :{
+                //     id:this.state.id,
+                // }
             })
     }
 
@@ -85,44 +89,10 @@ class SecondPage extends Component
         super(props);
         this.state = {
             // dataSource: [],
-            a:1,
-            b:2,
             id:9,
             c:99,
             data:[],
-            dataSource2:[
-                {
-                    "id": 1,
-                    "key1": "1",
-                    "name": "深圳汇源果汁有限公司",
-                    "city": "深圳",
-                    "phone": "13799998888",
-                    "contacts": "王大鹏",
-                    "email": "260815998@qq.com",
-                    "source": "广交会",
-                    "title": "总经理",
-                    "need": "软件",
-                    "url": "http://www.sohu.com/",
-                    "address": "广东省深圳市南山区桃园路22号天源大厦B座1123室",
-                    "remark": "初步接触",
-                    "inputtime": null
-                },
-                {
-                    "id": 70,
-                    "key1": "请填写key",
-                    "name": "请填写公司名称",
-                    "city": "请填写城市",
-                    "phone": "请填写电话",
-                    "contacts": "请填写联系人",
-                    "email": "请填写邮箱",
-                    "source": "请填写来源",
-                    "title": "请填写职务",
-                    "need": "请填写产品kk",
-                    "url": "请填写网址",
-                    "address": "请填写公司地址",
-                    "remark": "请填写备注",
-                    "inputtime": null
-                }]
+
 
         };
     }
@@ -192,28 +162,14 @@ class SecondPage extends Component
                 component: component,
                 passProps: {
                     title: title,
-                    lastPageTitle: this.props.title
+                    lastPageTitle: this.props.title,
+                    id: this.state.id
 
                 }
             })
     }
 
 
-    jian(){
-        const {a} = this.state.a;
-        // const {id} = this.state.dataSource[0].id
-        this.setState({ a: a-1,}
-            // dataSource:dataSource+''}
-        );
-        alert('a减去1后的值：' + a);
-    }
-
-    add(){
-        const {a} = this.state.a;
-        // this.setState({a : a+1});
-        this.setState({a : a+1});
-        alert('a加上1后的值：' + a);
-    }
 
     //List的分割线
     renderSeparator = () => {
@@ -252,7 +208,7 @@ class SecondPage extends Component
                     data={this.state.dataSource}
                     renderItem={({item}) => <TouchableOpacity style={styles.flatitemview} onPress={()=>{this.gotoPage1(HuiYuan, <Text> {item.name}</Text>);}}>
                         <Text> {item.name}</Text>
-                        </TouchableOpacity>
+                    </TouchableOpacity>
                     }
 
                     // keyExtractor={({id}, index) => id}
@@ -275,6 +231,37 @@ class SecondPage extends Component
 
 
 class HuiYuan extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+
+        };
+    }
+
+    componentDidMount() {//组件挂载时执行的代码
+        this.timerID = setInterval(
+            () => this.tick(),
+            1000 //每秒更新一次
+        );
+
+        this.setState({
+            id:this.props.id,
+        })
+    }
+
+    tick() {//定时器
+        this.setState({
+            date: new Date(),//创建当前时间
+            child:'删除',
+        });
+        // this.getCustomerList();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);//清理计时器
+
+    }
+
     render() {
         return (
             <ScrollView style={{paddingTop: 60}}
@@ -282,6 +269,8 @@ class HuiYuan extends Component{
                         showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}>
                 <Button>我是汇源肾宝</Button>
+
+                <Text>上个界面传入：{this.state.id}</Text>
 
             </ScrollView>
         );
@@ -397,20 +386,20 @@ const styles = StyleSheet.create({
         fontSize: 30,
     },
     flatitemimg: {
-     width: '100%',
-         height: 200,
+        width: '100%',
+        height: 200,
     },
     flatitemview: {
-    flex: 1,
+        flex: 1,
         marginRight:10,
         marginBottom:10,
     },
     flatlistview: {
-    // width: deviceWidth,
+        // width: deviceWidth,
         paddingLeft:10,
         paddingTop:23,
         marginBottom:250,
-}
+    }
 
 });
 
