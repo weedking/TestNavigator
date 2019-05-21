@@ -12,6 +12,7 @@ import {Navigator } from 'react-native-deprecated-custom-components';
 
 const Item = List.Item;
 const Brief = Item.Brief;
+global.aa = 1;
 
 export default class TestNavigator extends Component {
     configureScene(route, routeStack)
@@ -88,13 +89,14 @@ class SecondPage extends Component
     constructor(props){
         super(props);
         this.state = {
-            // dataSource: [],
-            id:9,
-            c:99,
-            data:[],
 
+            id:9,
+            newValue:0
 
         };
+
+        this.num = 1;
+
     }
 
     componentDidMount() {//组件挂载时执行的代码
@@ -170,7 +172,6 @@ class SecondPage extends Component
     }
 
 
-
     //List的分割线
     renderSeparator = () => {
         return (
@@ -198,6 +199,28 @@ class SecondPage extends Component
 
     _keyExtractor = (item, index) => item.id + '_' + index;
 
+//setState 之后的state值不能立即使用,需要调整。
+    jian(){
+        let id = this.state.id;
+        this.setState({id : id-1});
+        alert('id减去1后的值：' + id);
+    }
+
+    add(){
+        let id = this.state.id;
+        this.setState({id : id},
+            // () =>alert(this.state.id)
+        );
+        // alert('a加上1后的值：' + a);
+    }
+
+    handleSearch=()=>{
+        // let id = this.state.id;
+        // this.setState({id : id});
+        // console.log(this.state.id)			//输出更新后的state
+    }
+
+
     render()
     {
 
@@ -206,7 +229,17 @@ class SecondPage extends Component
             <View style={{flex: 1, paddingTop:100}}>
                 <FlatList
                     data={this.state.dataSource}
-                    renderItem={({item}) => <TouchableOpacity style={styles.flatitemview} onPress={()=>{this.gotoPage1(HuiYuan, <Text> {item.name}</Text>);}}>
+                    renderItem={({item}) => <TouchableOpacity style={styles.flatitemview} onPress={()=>{this.gotoPage1(HuiYuan, <Text> {item.name}</Text>);
+                    this.setState({id:item.id},() => {
+                       //通过全局变量打印最新的值
+                        global.aa=this.state.id;
+                        // alert(this.state.id);
+                        // this.setState({newValue:this.state.id});
+                    });
+                        // this.setState({id:item.id});
+                        // this.jian();
+                        // this.add();
+                    }}>
                         <Text> {item.name}</Text>
                     </TouchableOpacity>
                     }
@@ -215,26 +248,17 @@ class SecondPage extends Component
                     keyExtractor={this._keyExtractor} //把item.id作为key
                 />
             </View>
-
-
-
-
         );
     }
-
-
-
-
-
-
-}
+};
 
 
 class HuiYuan extends Component{
     constructor(props){
         super(props);
         this.state = {
-
+         id:0,
+            newValue:0
         };
     }
 
@@ -246,6 +270,9 @@ class HuiYuan extends Component{
 
         this.setState({
             id:this.props.id,
+            newValue:this.props.newValue,
+            // id:this.props.num,
+
         })
     }
 
@@ -270,7 +297,11 @@ class HuiYuan extends Component{
                         showsVerticalScrollIndicator={false}>
                 <Button>我是汇源肾宝</Button>
 
-                <Text>上个界面传入：{this.state.id}</Text>
+                {/*<Text>上个界面传入：{this.state.id}</Text>*/}
+                {/*通过全局变量aa,从上一个页面获取最新的值，即点击的公司id*/}
+                <Text>全局变量：{aa}</Text>
+
+                {/*<Text>上个界面传入：{this.state.newValue}</Text>*/}
 
             </ScrollView>
         );
