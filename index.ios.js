@@ -74,7 +74,7 @@ class FirstPage extends Component
                 {/*/!*<Text style={{padding: 10, fontSize: 20}}>这是首页，这是首页，这是首页，这是首页，这是首页</Text>*!/*/}
                 {/*</Button>*/}
 
-                <TouchableOpacity onPress={()=>{this.gotoPage(SecondPage, '二级页面');}}>
+                <TouchableOpacity onPress={()=>{this.gotoPage(SecondPage, '客户列表');}}>
                     <Image source={require('./img/customer64.png')} />
                 </TouchableOpacity>
             </View>
@@ -257,8 +257,9 @@ class HuiYuan extends Component{
     constructor(props){
         super(props);
         this.state = {
-         id:0,
-            newValue:0
+            id:0,
+            newValue:0,
+            dataSource:[]
         };
     }
 
@@ -281,7 +282,7 @@ class HuiYuan extends Component{
             date: new Date(),//创建当前时间
             child:'删除',
         });
-        // this.getCustomerList();
+        this.getCustomerByNo();
     }
 
     componentWillUnmount() {
@@ -289,20 +290,67 @@ class HuiYuan extends Component{
 
     }
 
+    //按点击的公司id向后台获取客户公司详情
+    getCustomerByNo(){
+        /* 查询数据的格式 */
+        let filter={
+            object:{
+                object:{
+
+                }
+            }
+        };
+
+
+        var preurl ="http://119.23.77.187:8080/getCustomerByNo?id=";
+        var url=preurl+Number(aa);
+        // var url ="http://119.23.77.187:8080/getCustomerByNo?id=1";
+        var getInformation ={
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            /* json格式转换 */
+            body:JSON.stringify(filter)
+        }
+        fetch(url,getInformation)
+            .then(response => response.json())
+            .then(responseJson=>{
+                // 返回的数据 根据自己返回的json格式取值.
+                debugger;
+                console.log(responseJson);
+                this.setState({
+                    dataSource: responseJson
+
+                })
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    _keyExtractor = (item, index) => item.id + '_' + index;
+
     render() {
         return (
-            <ScrollView style={{paddingTop: 60}}
+            <ScrollView style={{paddingTop: 80}}
                         automaticallyAdjustContentInsets={false}
                         showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}>
-                <Button>我是汇源肾宝</Button>
-
-                {/*<Text>上个界面传入：{this.state.id}</Text>*/}
                 {/*通过全局变量aa,从上一个页面获取最新的值，即点击的公司id*/}
-                <Text>全局变量：{aa}</Text>
-
-                {/*<Text>上个界面传入：{this.state.newValue}</Text>*/}
-
+                <Text>公司id：{aa}</Text>
+                <Text>公司名称：{this.state.dataSource.name}</Text>
+                <Text>客户来源：{this.state.dataSource.source}</Text>
+                <Text>需求产品：{this.state.dataSource.need}</Text>
+                <Text>所在城市：{this.state.dataSource.city}</Text>
+                <Text>    联系人：{this.state.dataSource.contacts}</Text>
+                <Text>       职务：{this.state.dataSource.title}</Text>
+                <Text>联系电话：{this.state.dataSource.phone}</Text>
+                <Text>公司地址：{this.state.dataSource.address}</Text>
+                <Text>公司网址：{this.state.dataSource.url}</Text>
+                <Text>       备注：{this.state.dataSource.remark}</Text>
+                <Text>创建时间：{this.state.dataSource.inputtime}</Text>
             </ScrollView>
         );
     }
